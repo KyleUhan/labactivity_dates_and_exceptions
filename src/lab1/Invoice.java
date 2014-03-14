@@ -1,5 +1,6 @@
 package lab1;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,61 +11,74 @@ import java.util.Date;
  */
 public class Invoice {
 
+    private int gracePeriod = 15;
+
     private Calendar invoiceDate;
     private Calendar dueDate;
-    private final int gracePeriod = 15;
-    private SimpleDateFormat sdf;
+
     private Date date;
+    private SimpleDateFormat simpleDateFormat;
 
     public Invoice() {
         setInvoiceDate(Calendar.getInstance());
     }
 
     public String getFormattedInvoiceDate() {
-        setSdf(new SimpleDateFormat("MM/dd/YY"));
-        setDate(getInvoiceDate().getTime());
-        return getSdf().format(getDate());
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm a");
+        return dateFormat.format(getInvoiceDate().getTime());
     }
 
+    //May not be the best way, but when I set the Calendar object "dueDate"
+    //it was only pointing at the Calendar object "invoice", so when I would add
+    //time to just the "dueDate" the original "invoice" was being adjusted as well.
+    //This causes a problem as the "invoice" time should not change - only the "dueDate"
+    //time 
+    //
     public Calendar getAdjustedDueDate() {
-        //setInvoiceDate(Calendar.getInstance());
-        setDueDate(getInvoiceDate());
-        
+        setDueDate((Calendar) getInvoiceDate().clone());
         getDueDate().add(Calendar.DATE, getGracePeriod());
-        
         return getDueDate();
     }
 
     public String getDueDateAsString() {
-        //setInvoiceDate(Calendar.getInstance());
-        setDueDate(getInvoiceDate());
-        
-        setSdf(new SimpleDateFormat("MM/dd/YYYY"));
-        
+        setSimpleDateFormat(new SimpleDateFormat("MM/dd/YYYY"));
+        setDueDate((Calendar) getInvoiceDate().clone());
         getDueDate().add(Calendar.DATE, getGracePeriod());
-        
         setDate(getDueDate().getTime());
-
-        return getSdf().format(getDate());
+        return getSimpleDateFormat().format(getDate());
     }
 
     //Getters and Setters
+    private Calendar getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    private void setInvoiceDate(final Calendar invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    private Calendar getDueDate() {
+        return dueDate;
+    }
+
     private void setDueDate(final Calendar dueDate) {
         this.dueDate = dueDate;
     }
 
-    public Calendar getDueDate() {
-        return dueDate;
-    }
-    
-    
-
-    private SimpleDateFormat getSdf() {
-        return sdf;
+    private int getGracePeriod() {
+        return gracePeriod;
     }
 
-    private void setSdf(final SimpleDateFormat sdf) {
-        this.sdf = sdf;
+    public void setGracePeriod(final int gracePeriod) {
+        this.gracePeriod = gracePeriod;
+    }
+
+    private SimpleDateFormat getSimpleDateFormat() {
+        return simpleDateFormat;
+    }
+
+    private void setSimpleDateFormat(final SimpleDateFormat simpleDateFormat) {
+        this.simpleDateFormat = simpleDateFormat;
     }
 
     private Date getDate() {
@@ -74,19 +88,5 @@ public class Invoice {
     private void setDate(final Date date) {
         this.date = date;
     }
-
-    private void setInvoiceDate(final Calendar invoiceDate) {
-        this.invoiceDate = invoiceDate;
-    }
-
-    private int getGracePeriod() {
-        return gracePeriod;
-    }
-
-    private Calendar getInvoiceDate() {
-        return invoiceDate;
-    }
-    
-    
 
 }
