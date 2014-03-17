@@ -32,7 +32,8 @@ public class Invoice {
     //it was only pointing at the Calendar object "invoice", so when I would add
     //time to just the "dueDate" the original "invoice" was being adjusted as well.
     //This causes a problem as the "invoice" time should not change - only the "dueDate"
-    //time 
+    //time should be adjusted.  So I've made a copy of the "invoice", cast it
+    //to a Calendar object, and set that copy = to "dueDate".
     //
     public Calendar getAdjustedDueDate() {
         setDueDate((Calendar) getInvoiceDate().clone());
@@ -40,8 +41,27 @@ public class Invoice {
         return getDueDate();
     }
 
+    /**
+     * Allows user to return Formatted dueDate - default format MM/dd/yyyy
+     * 
+     * @return Formated Date
+     */
     public String getDueDateAsString() {
         setSimpleDateFormat(new SimpleDateFormat("MM/dd/YYYY"));
+        setDueDate((Calendar) getInvoiceDate().clone());
+        getDueDate().add(Calendar.DATE, getGracePeriod());
+        setDate(getDueDate().getTime());
+        return getSimpleDateFormat().format(getDate());
+    }
+
+    /**
+     * Allows user to dynamically set date format
+     * 
+     * @param simpleDateFormat ie: new SimpleDateFormat("MM/dd/YYYY HH:mm:ss a")
+     * @return formated Date
+     */
+    public final String getDueDateAsString(final SimpleDateFormat simpleDateFormat) {
+        setSimpleDateFormat(simpleDateFormat);
         setDueDate((Calendar) getInvoiceDate().clone());
         getDueDate().add(Calendar.DATE, getGracePeriod());
         setDate(getDueDate().getTime());
@@ -69,7 +89,7 @@ public class Invoice {
         return gracePeriod;
     }
 
-    public void setGracePeriod(final int gracePeriod) {
+    public final void setGracePeriod(final int gracePeriod) {
         this.gracePeriod = gracePeriod;
     }
 
