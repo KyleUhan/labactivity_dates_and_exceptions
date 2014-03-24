@@ -1,4 +1,4 @@
-package lab3;
+package lab4;
 
 /**
  *
@@ -12,18 +12,18 @@ public class StartUp {
 
         String date = "03/15/2014";
 
-        try{
+        try {
             ds.convertStringToDate(date);
-        }catch (RuntimeException re) {
-                System.out.println(re.getLocalizedMessage());
+        } catch (NullPointerException | EmptyException np) {
+            System.out.println(np.getLocalizedMessage());
         }
 
         date = "March 15, 2014 2:30 PM";
-        try{
+        
+        try {
             ds.convertStringToCalendar(date);
-        }catch(RuntimeException re){
-            System.out.println(re.getLocalizedMessage());
+         } catch (NullPointerException | EmptyException np) {
+            System.out.println(np.getLocalizedMessage());
         }
     }
-
 }
